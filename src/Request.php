@@ -132,6 +132,10 @@ class Request implements WritableStreamInterface
         $this->buffer .= $data;
 
         if (false !== strpos($this->buffer, "\r\n\r\n")) {
+            if ($this->buffer === 'HTTP/1.1 100 Continue' . "\r\n\r\n") {
+                $this->buffer = '';
+                return;
+            }
             list($response, $bodyChunk) = $this->parseResponse($this->buffer);
 
             $this->buffer = null;
